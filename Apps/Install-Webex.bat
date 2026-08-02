@@ -33,6 +33,30 @@ exit /b
 :: ------------------------------------------------
 :Main
 
-echo Program Started...
+call :CheckAdmin
+
+echo.
+echo Administrator OK!
+echo.
 
 exit /b
+
+:: ------------------------------------------------
+:CheckAdmin
+
+net session >nul 2>&1
+
+if %errorlevel%==0 (
+    echo Running as Administrator.
+    exit /b
+)
+
+echo.
+echo Administrator privilege required.
+echo Requesting elevation...
+echo.
+
+powershell -Command ^
+"Start-Process '%~f0' -Verb RunAs"
+
+exit
